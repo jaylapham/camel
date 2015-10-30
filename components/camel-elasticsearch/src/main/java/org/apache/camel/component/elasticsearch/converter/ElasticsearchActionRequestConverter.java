@@ -51,6 +51,13 @@ public final class ElasticsearchActionRequestConverter {
         } else {
             return null;
         }
+        
+        // required query parameter for parent-child relationships in ES
+        // see https://www.elastic.co/guide/en/elasticsearch/guide/current/indexing-parent-child.html
+        String parent = exchange.getIn().getHeader("parent", String.class);
+        if (parent != null) {
+            indexRequest.parent(parent);
+        }
 
         return indexRequest
                 .consistencyLevel(exchange.getIn().getHeader(
